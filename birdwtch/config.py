@@ -1,1 +1,2 @@
-pubsub_channel = "tweets"
+tweet_channel = "tweets"
+metadata_channel = "metadata"

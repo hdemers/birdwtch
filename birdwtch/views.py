@@ -27,15 +27,34 @@ def index():
     global variable `appConfig`, see templates/base.html.
     """
     webapp_config = {
-        'channel': config.pubsub_channel,
+        'tweet_channel': config.tweet_channel,
+        'metadata_channel': config.metadata_channel,
     }
     return render_template('index.html', config=webapp_config)
 
 
 @sockets.route('/tweets')
 def tweets(websocket):
-    log.debug("Registering new websocket client.")
-    publish.subscribe(websocket)
+    channel = config.tweet_channel
+    log.debug("Registering new websocket client for channel '{}'".format(
+        channel))
+    publish.subscribe(websocket, channel)
+    publish.start()
+
+    while websocket.socket is not None:
+        # Context switch while `publish.start` is running in the
+        # background.
+        gevent.sleep()
+
+    log.debug("Connection closed.")
+
+
+@sockets.route('/metadata')
+def metadata(websocket):
+    channel = config.metadata_channel
+    log.debug("Registering new websocket client for channel '{}'".format(
+        channel))
+    publish.subscribe(websocket, channel)
     publish.start()
 
     while websocket.socket is not None:
