@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="birdwtch" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0, user-scalable=no" />
+    <title>birdwtch</title>
+
+    {% block links %} {% endblock links %}
+    
+    {% block headscripts %} 
+    <script type="text/javascript">
+    // Don't HTML escape, see
+    // http://jinja.pocoo.org/docs/templates/#working-with-automatic-escaping
+      appConfig = {{config|safe}};
+    </script>
+
+    {% endblock headscripts %}
+  </head>
+	
+  <body id="body">
+    <div id="alertContainer">
+      <div id="jsAlert" class="hide alert alert-block" 
+        data-bind="css: {hide: alertHeading() === ''}">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading" data-bind="text: alertHeading"></h4>
+        <p data-bind="html: alertMsg"></p>
+      </div>
+    </div>
+    {% block content %} {% endblock content %}
+
+    {% block endscripts %} {% endblock endscripts %}
+  </body>
+</html>
+
+
+
