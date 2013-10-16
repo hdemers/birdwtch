@@ -9,9 +9,37 @@
 @land: #34332c;
 @boundary: @background;
 
+@blue: #00beff;
+@red: #C0392B;
+@white: white;
 
 body {
     background-color: @background;
+}
+
+#alertContainer {
+  position: fixed;
+  top: 80px;
+  width: 100%;
+  z-index: 100;
+}
+
+#jsAlert {
+  width: 400px;
+  margin: auto;
+}
+
+.alert h4 {
+  font-weight: normal;
+  text-transform: uppercase;
+  color: white;
+}
+
+.alert {
+  text-shadow: none;
+  color: @white;
+  background-color: @blue;
+  border: none;
 }
 
 .land {
@@ -26,4 +54,15 @@ body {
 
 .dot {
     fill: @dot;
+}
+
+.metadata {
+    position: absolute;
+    width: 20%;
+    bottom: 30%;
+    color: @dot;
+}
+
+#banner {
+    margin-bottom: 30px;
 }
