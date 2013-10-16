@@ -23,10 +23,10 @@ The file layout is inspired from this
 What it does
 ------------
 
-Stream all tweets having coordinates by using the `locations`
-(https://dev.twitter.com/docs/streaming-apis/parameters#locations) parameter of
-the Stream API. With a `locations` value of *-180, -90, 180, 90*, all geotagged
-tweets are returned.
+Stream all tweets having coordinates by using the 
+[`locations`](https://dev.twitter.com/docs/streaming-apis/parameters#locations)
+parameter of the Stream API. With a `locations` value of *-180, -90, 180, 90*,
+all geotagged tweets are returned.
 
 Show those tweets on a map.
 

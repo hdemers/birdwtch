@@ -14,11 +14,48 @@
 
 {% block content %}
 <div class="container-fluid">
+  
   <div class="row-fluid">
     <div class="span12">
       <div id="worldmap"></div>
     </div>
   </div>
+
+  <div class="metadata">
+    <div class="row-fluid" id="banner">
+      <h2 class="span12">birdwtch</h2>
+      <h4>geotagged tweets on a map</h4>
+    </div>
+    <div class="row-fluid">
+
+      <div class="row-fluid">
+        <div class="span4">Count</div>
+        <div class="span4 text-right">
+          <span data-bind="text: detectionCount"></span>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <!--<div class="span6 text-right">-->
+          <!--Since-->
+        <!--</div>-->
+        <div class="span4">Since</div>
+        <div class="span4 text-right">
+          <span data-bind="text: runningTime"></span>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span4">Rate</div>
+        <div class="span4 text-right">
+          <span data-bind="text: detectionRate"></span>
+        </div>
+        <div class="span4">/min</div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 {% endblock content %}
 
