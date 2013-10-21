@@ -18,11 +18,13 @@ function ($, topo, d3) {
   var exports = {};
 
   // Draw the world.
-  exports.create = function (container) {
+  exports.create = function (container, colorMap) {
     var that = {},
       height, width,
       path, projection, svg, g,
-      deferred;
+      canvas, context,
+      deferred, canvasDot,
+      colormap = colorMap;
 
     that.draw = function () {
       deferred = $.Deferred();
@@ -43,6 +45,14 @@ function ($, topo, d3) {
       svg = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height);
+
+      canvas = d3.select(container).append("canvas")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("id", "foreground");
+
+      context = document.getElementById("foreground").getContext("2d");
+      context.globalAlpha = 0.6;
 
       g = svg.append("g");
 
@@ -73,29 +83,43 @@ function ($, topo, d3) {
         }));
     };
 
-    // Draw a dot on the world. Wait for the world to be drawn first.
-    that.dot = function (data) {
+    // Draw dots on the world. Wait for the world to be drawn first.
+    that.dots = function (data) {
       deferred.done(function () {
         g.selectAll("circle")
           .data(data)
           .enter()
             .append("circle")
+            .call(function (dots) {
+              dots.data().map(canvasDot);
+            })
             .attr("cx", function (d) {
-              return projection([d.lng, d.lat])[0];
+              return projection(d.coordinates)[0];
             })
             .attr("cy", function (d) {
-              return projection([d.lng, d.lat])[1];
+              return projection(d.coordinates)[1];
             })
             .attr("r", function (d) {return d.r; })
             .attr("class", function (d) {return "dot " + d.class; })
           .transition()
-            .duration(200)
+            .duration(100)
             .attr("r", function (d) {return d.r * 10; })
           .transition()
-            .duration(200)
+            .duration(100)
             .attr("r", function (d) {return d.r; });
       });
+    };
 
+    that.clear = function () {
+      g.selectAll("circle").remove();
+    };
+
+    canvasDot = function (datum) {
+      var projected = projection(datum.coordinates);
+      context.beginPath();
+      context.arc(projected[0], projected[1], datum.r, 0, 2 * Math.PI);
+      context.fillStyle = colormap[datum.lang] || colormap.und;
+      context.fill();
     };
 
     // Redraw the map
