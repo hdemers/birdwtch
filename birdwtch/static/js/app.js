@@ -135,7 +135,8 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
     var point = {
       lng: tweet.coordinates.coordinates[0],
       lat: tweet.coordinates.coordinates[1],
-      r: 1
+      r: 1,
+      class: "lang-" + tweet.lang
     };
     points.push(point);
     world.dot(points);
