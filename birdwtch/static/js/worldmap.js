@@ -6,7 +6,8 @@
  * Function `create` returns a worldmap object with a method `dot` for adding
  * circles.
  */
-/*global d3:false topojson:false*/
+
+/*global topojson:false */
 define([
   "jquery",
   "topo",
@@ -86,7 +87,7 @@ function ($, topo, d3) {
               return projection([d.lng, d.lat])[1];
             })
             .attr("r", function (d) {return d.r; })
-            .attr("class", "dot")
+            .attr("class", function (d) {return "dot " + d.class; })
           .transition()
             .duration(200)
             .attr("r", function (d) {return d.r * 10; })

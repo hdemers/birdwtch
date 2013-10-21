@@ -17,7 +17,8 @@ redis = cache.get_redis_connection()
 
 
 def process_tweets(tweets):
-    channels[tweet_channel].publish(keep(['coordinates'], tweets), "tweets")
+    channels[tweet_channel].publish(keep(['coordinates', 'lang'], tweets),
+                                    "tweets")
     return len(tweets)
 
 
