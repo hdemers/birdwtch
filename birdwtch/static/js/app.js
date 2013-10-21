@@ -89,7 +89,6 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
    * Show metadata information.
    */
   metadata = function (data) {
-    console.log(data);
     // Execute once.
     initStats(data);
 
