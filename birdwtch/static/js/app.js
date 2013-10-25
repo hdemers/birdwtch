@@ -14,17 +14,32 @@ define([
   "pseudort"
 ],
 function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
-  var exports = {}, dot, points = [], world, deburst, metadata,
+  var exports = {}, makeDot, world, deburst, metadata,
     updateStats, initStats, stats = {}, withCommas, updateRatio,
-    previous_receipt_at = 0, tweet_cache = [], intervalId = null,
-    delay = 100, serverDelay = 4000, startTime = moment();
+    previous_receipt_at = 0, intervalId = null, intervals = [],
+    delay = 100, serverDelay = 4000, startTime = moment(), colormap;
 
   exports.initialize = function () {
     console.log("Initializing app.");
     ko.applyBindings(viewmodel);
 
+    colormap = {
+      en: "#00beff",
+      it: "#FF004B",
+      es: "#CBFF00",
+      pt: "#27FF00",
+      tr: "#00FF63",
+      ru: "#00FFDC",
+      ar: "#EC00FF",
+      fr: "#FF7A00",
+      ja: "#7c00ff",
+      de: "#1465ff",
+      id: "#FFC500",
+      und: "#181815",
+    };
+
     $("#worldmap").height($(window).height());
-    world = worldmap.create("#worldmap");
+    world = worldmap.create("#worldmap", colormap);
     websocket.initialize(appConfig.tweet_channel, deburst);
     websocket.initialize(appConfig.metadata_channel, metadata);
 
@@ -47,27 +62,29 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
    * Send tweets to be printed on the map at some interval
    */
   deburst = function (tweets) {
-    var interval = 30;
+    var interval = 20, dots = tweets.map(makeDot), drawn = [];
+    world.clear();
     
-    // Empty cache if too big.
-    if (tweet_cache.length > 2 * tweets.length) {
-      tweet_cache = [];
-    }
-    tweet_cache = tweet_cache.concat(tweets);
-
     // Estimate how much time we have to paint each dot on the map. This
     // estimate is based on the last interval and is thus imprecise. That's
     // why we have to empty the cache periodically.
     if (previous_receipt_at) {
-      interval = (moment() - previous_receipt_at) / (tweet_cache.length * 1.2);
+      intervals.push((moment() - previous_receipt_at) / (dots.length * 1.2));
+      if (intervals.length > 5) {
+        intervals.shift();
+      }
+      interval = _.reduce(intervals, function (memo, num) {
+        return memo + num;
+      }, 0) / intervals.length;
     }
     previous_receipt_at = moment();
     if (intervalId) {
       clearInterval(intervalId);
     }
     intervalId = setInterval(function () {
-      if (tweet_cache.length) {
-        dot(tweet_cache.shift());
+      if (dots.length) {
+        drawn = drawn.concat(dots.shift());
+        world.dots(drawn);
       }
     }, interval);
   };
@@ -129,17 +146,15 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
   };
 
   /**
-   * Add a dot on the worldmap.
+   * Make a dot from a tweet.
    */
-  dot = function (tweet) {
-    var point = {
-      lng: tweet.coordinates.coordinates[0],
-      lat: tweet.coordinates.coordinates[1],
-      r: 1,
+  makeDot = function (tweet) {
+    return {
+      coordinates: tweet.coordinates.coordinates,
+      r: 1.5,
+      lang: tweet.lang,
       class: "lang-" + tweet.lang
     };
-    points.push(point);
-    world.dot(points);
   };
 
   $(window).resize(function () {
