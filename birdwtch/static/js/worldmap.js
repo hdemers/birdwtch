@@ -15,12 +15,12 @@ define([
   "projection"
 ],
 function ($, topo, d3) {
-  var exports = {};
+  var exports = {}, scaleFactor;
 
   // Draw the world.
   exports.create = function (container, colorMap) {
     var that = {},
-      height, width,
+      height, width, ratio,
       path, projection, svg, g,
       canvas, context,
       deferred, canvasDot,
@@ -32,9 +32,11 @@ function ($, topo, d3) {
 
       width = $(container).width();
       height = $(container).height();
+      ratio = width / height;
 
+      // Use a quantized scale function of the screen ratio
       projection = d3.geo.ginzburg5()
-        .scale(width * 0.22)
+        .scale(width * scaleFactor(ratio))
         .center([0, 0])
         .rotate([0, 0])
         .translate([width / 2.1, height / 1.9]);
@@ -86,27 +88,35 @@ function ($, topo, d3) {
     // Draw dots on the world. Wait for the world to be drawn first.
     that.dots = function (data) {
       deferred.done(function () {
-        g.selectAll("circle")
-          .data(data)
-          .enter()
-            .append("circle")
-            .call(function (dots) {
-              dots.data().map(canvasDot);
-            })
-            .attr("cx", function (d) {
-              return projection(d.coordinates)[0];
-            })
-            .attr("cy", function (d) {
-              return projection(d.coordinates)[1];
-            })
-            .attr("r", function (d) {return d.r; })
-            .attr("class", function (d) {return "dot " + d.class; })
-          .transition()
-            .duration(100)
-            .attr("r", function (d) {return d.r * 10; })
-          .transition()
-            .duration(100)
-            .attr("r", function (d) {return d.r; });
+        // D3.js transitions are too costly for phones and tablets.
+        if (navigator.userAgent.match("Android") ||
+            navigator.userAgent.match("iPhone") ||
+            navigator.userAgent.match("iPad")) {
+          canvasDot(data[data.length - 1]);
+        }
+        else {
+          g.selectAll("circle")
+            .data(data)
+            .enter()
+              .append("circle")
+              .call(function (dots) {
+                dots.data().map(canvasDot);
+              })
+              .attr("cx", function (d) {
+                return projection(d.coordinates)[0];
+              })
+              .attr("cy", function (d) {
+                return projection(d.coordinates)[1];
+              })
+              .attr("r", function (d) {return d.r; })
+              .attr("class", function (d) {return "dot " + d.class; })
+            .transition()
+              .duration(100)
+              .attr("r", function (d) {return d.r * 10; })
+            .transition()
+              .duration(200)
+              .attr("r", function (d) {return d.r; });
+        }
       });
     };
 
@@ -135,6 +145,17 @@ function ($, topo, d3) {
     return that;
   };
 
+  scaleFactor = function (ratio) {
+    if (ratio > 1.9) {
+      return 0.185;
+    }
+    else if (ratio > 1.5) {
+      return 0.23;
+    }
+    else if (ratio > 1) {
+      return 0.25;
+    }
+  };
 
   return exports;
 });
