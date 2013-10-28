@@ -62,7 +62,7 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
    * Send tweets to be printed on the map at some interval
    */
   deburst = function (tweets) {
-    var interval = 20, dots = tweets.map(makeDot), drawn = [];
+    var interval = 20, dots = tweets.map(makeDot), index = 1;
     world.clear();
     
     // Estimate how much time we have to paint each dot on the map. This
@@ -82,9 +82,8 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
       clearInterval(intervalId);
     }
     intervalId = setInterval(function () {
-      if (dots.length) {
-        drawn = drawn.concat(dots.shift());
-        world.dots(drawn);
+      if (dots.length && index < dots.length) {
+        world.dots(dots.slice(0, index++));
       }
     }, interval);
   };
