@@ -39,7 +39,7 @@ function ($, topo, d3) {
         .scale(width * scaleFactor(ratio))
         .center([0, 0])
         .rotate([0, 0])
-        .translate([width / 2.1, height / 1.9]);
+        .translate([width / 2.1, height / 1.8]);
 
       path = d3.geo.path()
         .projection(projection);
@@ -146,8 +146,9 @@ function ($, topo, d3) {
   };
 
   scaleFactor = function (ratio) {
+    console.log("Screen ratio", ratio);
     if (ratio > 1.9) {
-      return 0.185;
+      return 0.195;
     }
     else if (ratio > 1.5) {
       return 0.23;
