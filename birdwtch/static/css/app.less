@@ -26,6 +26,10 @@ body {
     background-color: @background;
 }
 
+.container-fluid {
+    padding: 0 15px;
+}
+
 #alertContainer {
   position: fixed;
   top: 80px;
@@ -75,11 +79,20 @@ svg, canvas {
     fill: @dot;
 }
 
+.title {
+    position: absolute;
+    top: 0%;
+    color: @blue;
+    padding: 0 15px;
+}
+
 .metadata {
     position: absolute;
-    width: 23%;
-    bottom: 30%;
+    width: 40%;
+    bottom: 0%;
+    left: 3%;
     color: @blue;
+    font-size: 18px;
 }
 
 #banner {
