@@ -34,12 +34,16 @@ function ($, topo, d3) {
       height = $(container).height();
       ratio = width / height;
 
+      //console.log("Screen size:", width, height);
+
       // Use a quantized scale function of the screen ratio
       projection = d3.geo.ginzburg5()
         .scale(width * scaleFactor(ratio))
         .center([0, 0])
         .rotate([0, 0])
         .translate([width / 2.1, height / 1.8]);
+
+      //console.log(width / 2.1, height / 1.8);
 
       path = d3.geo.path()
         .projection(projection);
