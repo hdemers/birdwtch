@@ -2,7 +2,7 @@ import gevent
 
 from cloudly.pubsub import RedisWebSocket
 from cloudly.tweets import Tweets, StreamManager, keep
-from cloudly import logger, cache
+from cloudly import logger
 
 from birdwtch.config import tweet_channel, metadata_channel
 
@@ -13,7 +13,7 @@ channels = {
 }
 for pubsub in channels.itervalues():
     pubsub.spawn()
-redis = cache.get_redis_connection()
+is_running = False
 
 
 def process_tweets(tweets):
@@ -36,9 +36,10 @@ def run():
 
 
 def start():
-    log.debug("State of stream manager: {}".format(redis.get("stream")))
-    if redis.getset("stream", "running") in ["stopped", None]:
+    global is_running
+    if not is_running:
         gevent.spawn(run)
+        is_running = True
 
 
 def subscribe(websocket, channel):
@@ -47,8 +48,9 @@ def subscribe(websocket, channel):
 
 
 def stop():
+    global is_running
     if len(channels['tweets'].websockets) == 0:
         log.info("Stopping Twitter stream manager.")
-        redis.set("stream", "stopped")
+        is_running = False
         return True
     return False
