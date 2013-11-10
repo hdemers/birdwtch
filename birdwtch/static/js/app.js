@@ -35,6 +35,7 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
       ja: "#7c00ff",
       de: "#1465ff",
       id: "#FFC500",
+      th: "#077500",
       und: "#181815",
     };
 
