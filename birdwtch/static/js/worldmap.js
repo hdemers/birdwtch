@@ -21,7 +21,7 @@ function ($, topo, d3) {
   exports.create = function (container, colorMap) {
     var that = {},
       height, width, ratio,
-      path, projection, svg, g,
+      path, projection, dots_g, world_g,
       canvas, context,
       deferred, canvasDot,
       colormap = colorMap;
@@ -49,29 +49,33 @@ function ($, topo, d3) {
       path = d3.geo.path()
         .projection(projection);
 
-      svg = d3.select(container).append("svg")
+      world_g = d3.select(container).append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .append("g");
 
       canvas = d3.select(container).append("canvas")
         .attr("width", width)
         .attr("height", height)
         .attr("id", "foreground");
+      
+      dots_g = d3.select(container).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g");
 
       context = document.getElementById("foreground").getContext("2d");
       context.globalAlpha = 0.6;
 
-      g = svg.append("g");
-
-        // Load country data and draw.
+      // Load country data and draw.
       d3.json("/static/js/other/world-50m.json",
       function (error, world) {
-        g.insert("path")
+        world_g.insert("path")
           .datum(topojson.feature(world, world.objects.land))
           .attr("class", "land")
           .attr("d", path);
 
-        g.insert("path")
+        world_g.insert("path")
           .datum(
             topojson.mesh(world, world.objects.countries, function (a, b) {
               return a !== b;
@@ -81,13 +85,6 @@ function ($, topo, d3) {
         deferred.resolve();
       });
 
-      svg.call(d3.behavior.zoom()
-        .on("zoom", function () {
-          g.attr("transform", "translate(" +
-            d3.event.translate.join(",") + ")scale(" + d3.event.scale + ")");
-          g.selectAll("path")
-            .attr("d", path.projection(projection));
-        }));
     };
 
     // Draw dots on the world. Wait for the world to be drawn first.
@@ -100,7 +97,7 @@ function ($, topo, d3) {
           canvasDot(data[data.length - 1]);
         }
         else {
-          g.selectAll("circle")
+          dots_g.selectAll("circle")
             .data(data)
             .enter()
               .append("circle")
@@ -126,7 +123,7 @@ function ($, topo, d3) {
     };
 
     that.clear = function () {
-      g.selectAll("circle").remove();
+      dots_g.selectAll("circle").remove();
     };
 
     canvasDot = function (datum) {
