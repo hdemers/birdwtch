@@ -10,19 +10,20 @@
 /*global topojson:false */
 define([
   "jquery",
+  "underscore",
   "topo",
   "d3",
   "projection"
 ],
-function ($, topo, d3) {
-  var exports = {}, scaleFactor;
+function ($, _, topo, d3) {
+  var exports = {}, scaleFactor, doAnimation, createCanvas, addToContext;
 
   // Draw the world.
   exports.create = function (container, colorMap) {
     var that = {},
       height, width, ratio,
       path, projection, dots_g, world_g,
-      canvas, context,
+      allContext, langContexts = {},
       deferred, canvasDot,
       colormap = colorMap;
 
@@ -54,18 +55,16 @@ function ($, topo, d3) {
         .attr("height", height)
         .append("g");
 
-      canvas = d3.select(container).append("canvas")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("id", "foreground");
+      _.each(colormap, function (color, lang) {
+        langContexts[lang] = createCanvas(lang);
+      });
+      allContext = createCanvas("all");
       
       dots_g = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height)
+        .attr("id", "dotSvg")
         .append("g");
-
-      context = document.getElementById("foreground").getContext("2d");
-      context.globalAlpha = 0.6;
 
       // Load country data and draw.
       d3.json("/static/js/other/world-50m.json",
@@ -91,9 +90,7 @@ function ($, topo, d3) {
     that.dots = function (data) {
       deferred.done(function () {
         // D3.js transitions are too costly for phones and tablets.
-        if (navigator.userAgent.match("Android") ||
-            navigator.userAgent.match("iPhone") ||
-            navigator.userAgent.match("iPad")) {
+        if (!doAnimation()) {
           canvasDot(data[data.length - 1]);
         }
         else {
@@ -127,6 +124,11 @@ function ($, topo, d3) {
     };
 
     canvasDot = function (datum) {
+      addToContext(datum, allContext);
+      addToContext(datum, langContexts[datum.lang] || langContexts.und);
+    };
+
+    addToContext = function (datum, context) {
       var projected = projection(datum.coordinates);
       context.beginPath();
       context.arc(projected[0], projected[1], datum.r, 0, 2 * Math.PI);
@@ -141,6 +143,30 @@ function ($, topo, d3) {
         $(container).children().remove();
         that.draw();
       }
+    };
+
+    createCanvas = function (name) {
+      var context, canvasId = name + "Canvas";
+      d3.select(container).append("canvas")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("id", canvasId);
+
+      context = document.getElementById(canvasId).getContext("2d");
+      context.globalAlpha = 0.6;
+      return context;
+    };
+    
+    that.show = function (lang) {
+      // Hide all canvas
+      $("canvas").hide();
+      // Hide the dot svg
+      $("#dotSvg").hide();
+
+      if (lang === "all") {
+        $("#dotSvg").show();
+      }
+      $("#" + lang + "Canvas").show();
     };
 
     that.draw();
@@ -158,6 +184,13 @@ function ($, topo, d3) {
     else if (ratio > 1) {
       return 0.25;
     }
+  };
+
+
+  doAnimation = function () {
+    return !(navigator.userAgent.match("Android") ||
+      navigator.userAgent.match("iPhone") ||
+      navigator.userAgent.match("iPad"));
   };
 
   return exports;
