@@ -8,6 +8,7 @@
 @background: #2e2d27;
 @land: #34332c;
 @boundary: @background;
+@darkbackground: #1e1d19;
 
 @blue: #00beff;
 @red: #FF004B;
@@ -23,11 +24,37 @@
 @forest: #077500;
 @white: white;
 
-@import "gh-fork-ribbon.less";
+@sidemenuwidth: 280px;
 
 body {
     background-color: @background;
     color: @fontcolor;
+}
+
+.sidemenu {
+    position: absolute;
+    left: -(@sidemenuwidth - 20px);
+    width: @sidemenuwidth;
+    height: 100%;
+    padding: 20px;
+    overflow: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-color: @dot;
+    z-index: 10;
+    opacity: 0.8;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.sidemenu:hover {
+    left: 0px;
+}
+
+.sidemenu h4 {
+    margin-top: 50px;
 }
 
 .container-fluid {
@@ -102,6 +129,10 @@ svg, canvas {
 
 #banner {
     margin-bottom: 30px;
+}
+
+footer {
+    margin-top: 80px;
 }
 
 .lang-en {

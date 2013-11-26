@@ -39,10 +39,30 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
       und: "#181815",
     };
 
+    viewmodel.languages([
+      {code: 'all', name: "Show all"},
+      {code: 'en', name: 'English'},
+      {code: 'es', name: 'Español'},
+      {code: 'pt', name: 'Português'},
+      {code: 'it', name: 'Italiano'},
+      {code: 'tr', name: 'Türkçe'},
+      {code: 'ru', name: 'Pу́сский'},
+      {code: 'ar', name: 'العربية'},
+      {code: 'fr', name: 'Français'},
+      {code: 'ja', name: '日本語'},
+      {code: 'de', name: 'Deutsch'},
+      {code: 'id', name: 'Bahasa Indonesia'},
+      {code: 'th', name: 'ภาษาไทย'},
+      {code: 'und', name: 'All others'},
+    ]);
+
     $("#worldmap").height($(window).height());
     world = worldmap.create("#worldmap", colormap);
     websocket.initialize(appConfig.tweet_channel, deburst);
     websocket.initialize(appConfig.metadata_channel, metadata);
+    
+    viewmodel.languageShown("all");
+    viewmodel.languageShown.subscribe(world.show);
 
     // Start the time counter.
     setInterval(function () {
@@ -57,6 +77,12 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
       viewmodel.runningTime(str);
     }, 1000);
 
+    setTimeout(function () {
+      $(".sidemenu").css("left", "-100px");
+      setTimeout(function () {
+        $(".sidemenu").css("left", "");
+      }, 250);
+    }, 3000);
   };
 
   /**

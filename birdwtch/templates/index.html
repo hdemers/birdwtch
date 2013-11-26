@@ -13,13 +13,33 @@
 {% endblock headscripts %}
 
 {% block content %}
-<div class="github-fork-ribbon-wrapper right">
-  <div class="github-fork-ribbon">
-    <a href="https://github.com/hdemers/birdwtch">
-      Fork me on GitHub
-    </a>
+<div class="sidemenu hidden-xs">
+  <h4> Showing tweets having geographic coordinates </h4>
+
+  <p>Sometime tweets come with geographic coordinates attached as metadata.
+  Showing this position on a map along with the language used to write the
+  tweet, give us the opportunity to build interesting visualizations depicting
+  the languages of this world.  </p>
+
+  Explore each language:
+  <div data-bind="foreach: languages">
+    <div class="radio">
+      <label>
+        <input type="radio" name="languageGroup"
+        data-bind="value: code, checked: $root.languageShown" />
+        <span data-bind="text:name"></span>
+      </label>
+    </div>
   </div>
+
+  <footer>
+  <p>Built by hdemers</p>
+  Source <a href="https://github.com/hdemers/birdwtch"> code</a> on
+  GitHub
+  </footer>
+
 </div>
+
 
 <div class="container-fluid">
   
