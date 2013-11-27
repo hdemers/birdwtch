@@ -22,11 +22,11 @@
   the languages of this world.  </p>
 
   Explore each language:
-  <div data-bind="foreach: languages">
+  <div data-bind="foreach: languageLayers">
     <div class="radio">
       <label>
-        <input type="radio" name="languageGroup"
-        data-bind="value: code, checked: $root.languageShown" />
+        <input type="radio" name="layerGroup"
+        data-bind="value: code, checked: $root.layerShown" />
         <span data-bind="text:name"></span>
       </label>
     </div>
