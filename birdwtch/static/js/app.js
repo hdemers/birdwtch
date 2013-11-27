@@ -36,10 +36,10 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
       de: "#1465ff",
       id: "#FFC500",
       th: "#077500",
-      und: "#181815",
+      und: "#181815"
     };
 
-    viewmodel.languages([
+    viewmodel.languageLayers([
       {code: 'all', name: "Show all"},
       {code: 'en', name: 'English'},
       {code: 'es', name: 'Español'},
@@ -61,8 +61,8 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
     websocket.initialize(appConfig.tweet_channel, deburst);
     websocket.initialize(appConfig.metadata_channel, metadata);
     
-    viewmodel.languageShown("all");
-    viewmodel.languageShown.subscribe(world.show);
+    viewmodel.layerShown("all");
+    viewmodel.layerShown.subscribe(world.show);
 
     // Start the time counter.
     setInterval(function () {
@@ -178,8 +178,8 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
     return {
       coordinates: tweet.coordinates.coordinates,
       r: 1.5,
-      lang: tweet.lang,
-      class: "lang-" + tweet.lang
+      attr: tweet.lang,
+      class: "dot-" + tweet.lang
     };
   };
 

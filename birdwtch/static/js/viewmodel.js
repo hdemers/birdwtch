@@ -16,8 +16,8 @@ function (ko) {
     ratioDetFirehose: ko.observable(100),
     ratioStreamFirehose: ko.observable(100),
     runningTime: ko.observable("0s"),
-    languages: ko.observableArray(),
-    languageShown: ko.observable('all')
+    languageLayers: ko.observableArray(),
+    layerShown: ko.observable('all')
   };
   return exports;
 });

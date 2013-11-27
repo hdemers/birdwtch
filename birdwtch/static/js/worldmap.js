@@ -23,7 +23,7 @@ function ($, _, topo, d3) {
     var that = {},
       height, width, ratio,
       path, projection, dots_g, world_g,
-      allContext, langContexts = {},
+      allContext, attrContexts = {},
       deferred, canvasDot,
       colormap = colorMap;
 
@@ -55,10 +55,12 @@ function ($, _, topo, d3) {
         .attr("height", height)
         .append("g");
 
-      _.each(colormap, function (color, lang) {
-        langContexts[lang] = createCanvas(lang);
+      _.each(colormap, function (color, attr) {
+        attrContexts[attr] = createCanvas(color, attr);
       });
-      allContext = createCanvas("all");
+      allContext = createCanvas("", "all");
+      allContext.globalAlpha = 0.6;
+      that.show("all");
       
       dots_g = d3.select(container).append("svg")
         .attr("width", width)
@@ -125,14 +127,16 @@ function ($, _, topo, d3) {
 
     canvasDot = function (datum) {
       addToContext(datum, allContext);
-      addToContext(datum, langContexts[datum.lang] || langContexts.und);
+      addToContext(datum, attrContexts[datum.attr] || attrContexts.und);
     };
 
     addToContext = function (datum, context) {
       var projected = projection(datum.coordinates);
       context.beginPath();
       context.arc(projected[0], projected[1], datum.r, 0, 2 * Math.PI);
-      context.fillStyle = colormap[datum.lang] || colormap.und;
+      if (context.name === "all") {
+        context.fillStyle = colormap[datum.attr] || colormap.und;
+      }
       context.fill();
     };
 
@@ -145,7 +149,7 @@ function ($, _, topo, d3) {
       }
     };
 
-    createCanvas = function (name) {
+    createCanvas = function (color, name) {
       var context, canvasId = name + "Canvas";
       d3.select(container).append("canvas")
         .attr("width", width)
@@ -153,20 +157,21 @@ function ($, _, topo, d3) {
         .attr("id", canvasId);
 
       context = document.getElementById(canvasId).getContext("2d");
-      context.globalAlpha = 0.6;
+      context.fillStyle = color;
+      context.name = name;
       return context;
     };
     
-    that.show = function (lang) {
+    that.show = function (layer) {
       // Hide all canvas
       $("canvas").hide();
       // Hide the dot svg
       $("#dotSvg").hide();
 
-      if (lang === "all") {
+      if (layer === "all") {
         $("#dotSvg").show();
       }
-      $("#" + lang + "Canvas").show();
+      $("#" + layer + "Canvas").show();
     };
 
     that.draw();
