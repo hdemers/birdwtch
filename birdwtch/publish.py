@@ -4,6 +4,7 @@ from cloudly.pubsub import RedisWebSocket
 from cloudly.tweets import Tweets, StreamManager, keep
 from cloudly import logger
 
+from birdwtch import geo
 from birdwtch.config import tweet_channel, metadata_channel
 
 log = logger.init(__name__)
@@ -17,8 +18,10 @@ is_running = False
 
 
 def process_tweets(tweets):
-    channels[tweet_channel].publish(keep(['coordinates', 'lang'], tweets),
-                                    "tweets")
+    geo.country(tweets)
+    channels[tweet_channel].publish(
+        keep(['coordinates', 'lang', 'origin', 'origin_code'], tweets),
+        "tweets")
     return len(tweets)
 
 
