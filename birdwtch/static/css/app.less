@@ -25,8 +25,8 @@
 @forest: #077500;
 @white: white;
 
-@menuwidth: 280px;
-@graphwidth: 280px;
+@menuwidth: 680px;
+@graphwidth: 20px;
 
 body {
     background-color: @background;
@@ -37,19 +37,20 @@ a {
     color: @blue;
 }
 
-.sidebar {
+.js-sidebar {
     position: absolute;
     height: 100%;
     overflow: auto;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    background-color: @dot;
     z-index: 10;
     opacity: 0.8;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     transition: all 0.3s ease;
+    left: -(@menuwidth - 10px);
+    /*left: 0;*/
 }
 
 ::-webkit-scrollbar {
@@ -57,12 +58,14 @@ a {
 }
 
 .menu {
-    left: -(@menuwidth - 20px);
     width: @menuwidth;
     padding: 20px;
+    margin-right: 10px;
+    height: 100%;
+    background-color: @dot;
 }
 
-.menu:hover {
+.js-sidebar:hover {
     left: 0px;
 }
 
@@ -205,29 +208,13 @@ footer {
 
 // Graph related style
 
-.graph-container {
-    right: -(@graphwidth - 20px);
-    width: @graphwidth;
-    background-color: transparent;
-    padding-left: 10px;
-}
-
-.graphs {
-    background-color: @dot;
-    height: 100%;
-}
-
-.graph-container:hover {
-    right: 0px;
-}
 
 .language-graph {
+    float: right;
     height: 100%;
-}
-
-text {
-  font: 12px sans-serif;
-  fill: @fontcolor;
+    width: @graphwidth;
+    margin-right: 10px;
+    background-color: transparent;
 }
 
 .axis path,

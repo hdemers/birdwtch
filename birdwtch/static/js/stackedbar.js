@@ -16,7 +16,7 @@ function ($, _, d3) {
 
     that.init = function () {
       barWidth = 20;
-      margin = {top: 0, right: 320, bottom: 0, left: 0};
+      margin = {top: 0, right: 0, bottom: 0, left: 0};
       width = barWidth + margin.left + margin.right;
       height = $(selector).height() - margin.top - margin.bottom;
       y = d3.scale.linear().rangeRound([height, 0]);
@@ -52,38 +52,38 @@ function ($, _, d3) {
           .attr("width", barWidth)
           .attr("height", function (d) { return y(d.y0) - y(d.y1); });
 
-      texts = svg.selectAll("text")
-        .data(data, function (d) {return d.name; });
+      //texts = svg.selectAll("text")
+        //.data(data, function (d) {return d.name; });
 
-      texts.enter()
-        .append("text")
-          .attr("dy", "1em")
-          .attr("x", 30)
-          .attr("y", y_text)
-          .text(function (d) { return d.name; });
+      //texts.enter()
+        //.append("text")
+          //.attr("dy", "1em")
+          //.attr("x", 30)
+          //.attr("y", y_text)
+          //.text(function (d) { return d.name; });
       
       bars.transition()
         .duration(700)
         .attr("y", function (d) { return y(d.y1); })
         .attr("height", function (d) { return y(d.y0) - y(d.y1); });
 
-      texts.transition()
-        .duration(700)
-        .attr("y", y_text);
+      //texts.transition()
+        //.duration(700)
+        //.attr("y", y_text);
     };
 
     that.redraw = function () {
-      if ($(selector).width() !== width) {
+      if ($(selector).height() !== height) {
         // Remove everything under `selector`.
         $(selector).children().remove();
         that.init();
       }
     };
 
-    y_text = function (d, i) {
-      //var height = y(d.y0) - y(d.y1);
-      return y(d.y1);
-    };
+    //y_text = function (d, i) {
+      ////var height = y(d.y0) - y(d.y1);
+      //return y(d.y1);
+    //};
 
     that.init();
     return that;

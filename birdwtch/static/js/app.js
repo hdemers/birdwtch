@@ -80,11 +80,9 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) 
     }, 1000);
 
     setTimeout(function () {
-      $(".menu").css("left", "-100px");
-      $(".graph-container").css("right", "-100px");
+      $(".js-sidebar").css("left", "-100px");
       setTimeout(function () {
-        $(".menu").css("left", "");
-        $(".graph-container").css("right", "");
+        $(".js-sidebar").css("left", "");
       }, 400);
     }, 4000);
 
