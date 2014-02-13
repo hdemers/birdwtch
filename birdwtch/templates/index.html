@@ -18,7 +18,7 @@
   <div class="container-fluid menu">
 
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <h4> Showing tweets having geographic coordinates </h4>
 
         <p>Sometime tweets come with geographic coordinates attached as metadata.
@@ -37,21 +37,27 @@
           </div>
         </div>
 
-        <footer>
-        <p>Built by hdemers</p>
-        Source <a href="https://github.com/hdemers/birdwtch"> code</a> on
-        GitHub
-        </footer>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-6">
+        <div class="graph">
+          <div class="languages"></div>
+        </div>
       </div>
 
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="graph">
+          <div class="countries"></div>
+        </div>
+      </div>
     </div>
 
   </div>
 
   <div class="language-graph"></div>
+
 </div>
 
 
@@ -71,14 +77,20 @@
   <div class="metadata">
 
     <div class="row">
-      <div class="col-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: detectionCount"></span>
       </div>
-      <div class="col-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: runningTime"></span>
       </div>
-      <div class="cold-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: detectionRate"></span>/min
+      </div>
+      <div class="col-xs-3">
+        <span class="credits">
+          by hdemers
+          - <a href="https://github.com/hdemers/birdwtch">github</a>
+        </span>
       </div>
     </div>
 

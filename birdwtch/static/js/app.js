@@ -12,15 +12,17 @@ define([
   "worldmap",
   "moment",
   "pseudort",
+  "barchart",
   "stackedbar"
 ],
-function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) {
+function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart,
+stackedbar) {
   var exports = {}, makeDot, world, receive_tweets, deburst, metadata,
     updateStats, initStats, stats = {}, withCommas, updateRatio,
     previous_receipt_at = 0, intervalId = null, intervals = [],
     delay = 100, serverDelay = 4000, startTime = moment(),
     colormap = {}, languages,
-    language_chart, language_stats = {total: 0, lang: {}},
+    language_bar, language_chart, language_stats = {total: 0, lang: {}},
     country_chart, country_stats = {};
 
   exports.initialize = function () {
@@ -80,16 +82,20 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) 
     }, 1000);
 
     setTimeout(function () {
-      $(".js-sidebar").css("left", "-100px");
+      $(".js-sidebar").css("left", "-500px");
       setTimeout(function () {
         $(".js-sidebar").css("left", "");
       }, 400);
     }, 4000);
 
     // Create a bar chart for showing language frequencies.
-    language_chart = barchart.create(".language-graph");
+    language_bar = stackedbar.create(".language-graph");
+    language_chart = barchart.create(".graph .languages");
     // Create a bar chart for showing country frequencies.
-    //country_chart = barchart.create(".graph .countries");
+    country_chart = barchart.create(".graph .countries", {
+      width: 700,
+      max: 30
+    });
   };
     
   receive_tweets = function (tweets) {
@@ -122,6 +128,14 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) 
 
     });
 
+    language_bar.draw(_.map(language_stats.lang, function (value, lang) {
+      return {
+        frequency: value,
+        class: "dot-" + lang,
+        name: languages[lang].name
+      };
+    }));
+
     language_chart.draw(_.map(language_stats.lang, function (value, lang) {
       return {
         frequency: value,
@@ -130,13 +144,13 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) 
       };
     }));
 
-    //country_chart.draw(_.map(country_stats, function (data, country) {
-      //return {
-        //frequency: data.total,
-        //class: "land",
-        //name: country
-      //};
-    //}));
+    country_chart.draw(_.map(country_stats, function (data, country) {
+      return {
+        frequency: data.total,
+        class: "land",
+        name: country
+      };
+    }));
 
     // Show tweets, but not all at once, hence the de-bursting.
     deburst(tweets);
@@ -243,7 +257,7 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart) 
   $(window).resize(function () {
     $("#worldmap").height($(window).height());
     world.redraw();
-    language_chart.redraw();
+    language_bar.redraw();
   });
 
   /**

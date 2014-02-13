@@ -7,15 +7,22 @@ define([
 function ($, _, d3) {
   var exports = {};
   
-  exports.create = function (selector) {
+  exports.create = function (selector, options) {
     var that = {},
-      margin = {top: 10, right: 10, bottom: 120, left: 40},
-      width = 300 - margin.left - margin.right,
-      height = 550 - margin.top - margin.bottom,
       xAxis, yAxis, formatPercent,
-      x = d3.scale.ordinal().rangeRoundBands([0, width], 0.85, 1.5),
-      y = d3.scale.linear().range([height, 0]),
-      svg;
+      svg,
+      defaults = {
+        height: 250,
+        width: 350,
+        margin: {top: 10, right: 10, bottom: 120, left: 40},
+        max: undefined
+      },
+      opts = _.defaults(options || {}, defaults),
+      margin = opts.margin,
+      width = opts.width - margin.left - margin.right,
+      height = opts.height - margin.top - margin.bottom,
+      x = d3.scale.ordinal().rangeRoundBands([0, width], 0.55, 1.5),
+      y = d3.scale.linear().range([height, 0]);
     
     formatPercent = d3.format(".0%");
 
@@ -23,12 +30,6 @@ function ($, _, d3) {
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .attr("class", "bar-lang")
-        .on("mouseover", function () {
-          d3.selectAll(".axis").classed({hide: false});
-        })
-        .on("mouseout", function () {
-          d3.selectAll(".axis").classed({hide: true});
-        })
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -42,7 +43,7 @@ function ($, _, d3) {
       .tickFormat(formatPercent);
 
     svg.append("g")
-        .attr("class", "x axis hide")
+        .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
         .selectAll("text")
@@ -63,10 +64,12 @@ function ($, _, d3) {
 
     that.draw = function (data) {
       var bars;
+      data.sort(function (a, b) { return b.frequency - a.frequency; });
+      if (opts.max) {
+        data = data.slice(0, opts.max);
+      }
 
-      x = x.domain(
-          data.sort(function (a, b) { return b.frequency - a.frequency; })
-            .map(function (d) { return d.name; }));
+      x = x.domain(data.map(function (d) { return d.name; }));
 
       //x.domain(data.map(function (d) { return d.name; }));
       y.domain([0, d3.max(data, function (d) { return d.frequency; })]);
@@ -87,6 +90,8 @@ function ($, _, d3) {
         .attr("y", function (d) { return y(d.frequency); })
         .attr("width", x.rangeBand())
         .attr("height", function (d) { return height - y(d.frequency); });
+
+      bars.exit().remove();
 
       svg.select(".x.axis")
         .call(xAxis)

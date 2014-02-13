@@ -25,7 +25,7 @@
 @forest: #077500;
 @white: white;
 
-@menuwidth: 680px;
+@menuwidth: 800px;
 @graphwidth: 20px;
 
 body {
@@ -136,7 +136,7 @@ svg, canvas {
 
 .metadata {
     position: absolute;
-    width: 50%;
+    width: 100%;
     bottom: 0%;
     left: 3%;
     color: @blue;
@@ -147,8 +147,9 @@ svg, canvas {
     margin-bottom: 30px;
 }
 
-footer {
-    margin-top: 80px;
+.credits {
+    font-size: 12px;
+    color: @fontcolor;
 }
 
 .dot-en {
@@ -215,6 +216,11 @@ footer {
     width: @graphwidth;
     margin-right: 10px;
     background-color: transparent;
+}
+
+text {
+  font: 12px sans-serif;
+  fill: @fontcolor;
 }
 
 .axis path,
