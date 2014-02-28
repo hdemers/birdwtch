@@ -65,8 +65,8 @@ stackedbar) {
     websocket.initialize(appConfig.tweet_channel, receive_tweets);
     websocket.initialize(appConfig.metadata_channel, metadata);
     
-    viewmodel.layerShown("all");
     viewmodel.layerShown.subscribe(world.show);
+    viewmodel.layerShown.push("all");
 
     // Start the time counter.
     setInterval(function () {

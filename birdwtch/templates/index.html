@@ -27,25 +27,28 @@
         the languages of this world.  </p>
 
         Explore each language:
-        <div data-bind="foreach: languageLayers">
-          <div class="radio">
             <label>
-              <input type="radio" name="layerGroup"
-              data-bind="value: code, checked: $root.layerShown" />
-              <span data-bind="text:name"></span>
+              <select class="form-control" name="layerGroup"
+                data-bind="
+                options: languageLayers,
+                selectedOptions: layerShown,
+                optionsText: 'name',
+                optionsValue: 'code'">
+              </select>
             </label>
-          </div>
-        </div>
 
       </div>
 
-      <div class="col-md-6">
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
         <div class="graph">
           <div class="languages"></div>
         </div>
       </div>
-
     </div>
+
     <div class="row">
       <div class="col-md-12">
         <div class="graph">

@@ -163,15 +163,18 @@ function ($, _, topo, d3) {
     };
     
     that.show = function (layer) {
+      // We only allow one language layer to be shown at a time.
+      var code = layer[0];
+
       // Hide all canvas
       $("canvas").hide();
       // Hide the dot svg
       $("#dotSvg").hide();
 
-      if (layer === "all") {
+      if (code === "all") {
         $("#dotSvg").show();
       }
-      $("#" + layer + "Canvas").show();
+      $("#" + code + "Canvas").show();
     };
 
     that.draw();
