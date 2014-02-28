@@ -15,7 +15,7 @@ function ($, _, d3) {
     var that = {}, margin, width, height, y, svg, barWidth;
 
     that.init = function () {
-      barWidth = 20;
+      barWidth = 6;
       margin = {top: 0, right: 0, bottom: 0, left: 0};
       width = barWidth + margin.left + margin.right;
       height = $(selector).height() - margin.top - margin.bottom;

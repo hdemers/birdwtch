@@ -18,7 +18,7 @@
   <div class="container-fluid menu">
 
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <h4> Showing tweets having geographic coordinates </h4>
 
         <p>Sometime tweets come with geographic coordinates attached as metadata.
@@ -26,8 +26,11 @@
         tweet, give us the opportunity to build interesting visualizations depicting
         the languages of this world.  </p>
 
-        Explore each language:
-            <label>
+        
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-md-6 control-label">Explore each language</label>
+            <div class="col-md-6">
               <select class="form-control" name="layerGroup"
                 data-bind="
                 options: languageLayers,
@@ -35,7 +38,9 @@
                 optionsText: 'name',
                 optionsValue: 'code'">
               </select>
-            </label>
+            </div>
+          </div>
+        </form>
 
       </div>
 

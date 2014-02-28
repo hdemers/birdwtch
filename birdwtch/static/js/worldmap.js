@@ -53,6 +53,7 @@ function ($, _, topo, d3) {
       world_g = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height)
+        .attr("class", "map")
         .append("g");
 
       _.each(colormap, function (color, attr) {
@@ -66,6 +67,7 @@ function ($, _, topo, d3) {
         .attr("width", width)
         .attr("height", height)
         .attr("id", "dotSvg")
+        .attr("class", "map")
         .append("g");
 
       // Load country data and draw.
@@ -154,6 +156,7 @@ function ($, _, topo, d3) {
       d3.select(container).append("canvas")
         .attr("width", width)
         .attr("height", height)
+        .attr("class", "map")
         .attr("id", canvasId);
 
       context = document.getElementById(canvasId).getContext("2d");

@@ -82,7 +82,7 @@ stackedbar) {
     }, 1000);
 
     setTimeout(function () {
-      $(".js-sidebar").css("left", "-500px");
+      $(".js-sidebar").css("left", "-300px");
       setTimeout(function () {
         $(".js-sidebar").css("left", "");
       }, 400);
@@ -93,8 +93,8 @@ stackedbar) {
     language_chart = barchart.create(".graph .js-language-barchart");
     // Create a bar chart for showing country frequencies.
     country_chart = barchart.create(".graph .js-country-barchart", {
-      width: 700,
-      max: 30
+      width: 500,
+      max: 20
     });
   };
     
