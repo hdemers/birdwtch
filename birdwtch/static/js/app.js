@@ -89,10 +89,10 @@ stackedbar) {
     }, 4000);
 
     // Create a bar chart for showing language frequencies.
-    language_bar = stackedbar.create(".language-graph");
-    language_chart = barchart.create(".graph .languages");
+    language_bar = stackedbar.create(".js-language-stackedbar");
+    language_chart = barchart.create(".graph .js-language-barchart");
     // Create a bar chart for showing country frequencies.
-    country_chart = barchart.create(".graph .countries", {
+    country_chart = barchart.create(".graph .js-country-barchart", {
       width: 700,
       max: 30
     });
