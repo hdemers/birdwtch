@@ -61,7 +61,6 @@ function ($, _, topo, d3) {
       });
       allContext = createCanvas("", "all");
       allContext.globalAlpha = 0.6;
-      that.show("all");
       
       dots_g = d3.select(container).append("svg")
         .attr("width", width)
