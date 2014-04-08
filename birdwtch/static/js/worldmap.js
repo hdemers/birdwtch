@@ -53,6 +53,7 @@ function ($, _, topo, d3) {
       world_g = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height)
+        .attr("class", "map")
         .append("g");
 
       _.each(colormap, function (color, attr) {
@@ -60,12 +61,12 @@ function ($, _, topo, d3) {
       });
       allContext = createCanvas("", "all");
       allContext.globalAlpha = 0.6;
-      that.show("all");
       
       dots_g = d3.select(container).append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("id", "dotSvg")
+        .attr("class", "map")
         .append("g");
 
       // Load country data and draw.
@@ -154,6 +155,7 @@ function ($, _, topo, d3) {
       d3.select(container).append("canvas")
         .attr("width", width)
         .attr("height", height)
+        .attr("class", "map")
         .attr("id", canvasId);
 
       context = document.getElementById(canvasId).getContext("2d");
@@ -163,15 +165,18 @@ function ($, _, topo, d3) {
     };
     
     that.show = function (layer) {
+      // We only allow one language layer to be shown at a time.
+      var code = layer[0];
+
       // Hide all canvas
       $("canvas").hide();
       // Hide the dot svg
       $("#dotSvg").hide();
 
-      if (layer === "all") {
+      if (code === "all") {
         $("#dotSvg").show();
       }
-      $("#" + layer + "Canvas").show();
+      $("#" + code + "Canvas").show();
     };
 
     that.draw();

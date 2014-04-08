@@ -11,58 +11,62 @@ define([
   "websocket",
   "worldmap",
   "moment",
-  "pseudort"
+  "pseudort",
+  "barchart",
+  "stackedbar"
 ],
-function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
-  var exports = {}, makeDot, world, deburst, metadata,
+function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort, barchart,
+stackedbar) {
+  var exports = {}, makeDot, world, receive_tweets, deburst, metadata,
     updateStats, initStats, stats = {}, withCommas, updateRatio,
     previous_receipt_at = 0, intervalId = null, intervals = [],
-    delay = 100, serverDelay = 4000, startTime = moment(), colormap;
+    delay = 100, serverDelay = 4000, startTime = moment(),
+    colormap = {}, languages,
+    language_bar, language_chart, language_stats = {total: 0, lang: {}},
+    country_chart, country_stats = {};
 
   exports.initialize = function () {
     console.log("Initializing app.");
     ko.applyBindings(viewmodel);
 
-    colormap = {
-      en: "#00beff",
-      it: "#FF004B",
-      es: "#CBFF00",
-      pt: "#27FF00",
-      tr: "#00FF63",
-      ru: "#00FFDC",
-      ar: "#EC00FF",
-      fr: "#FF7A00",
-      ja: "#7c00ff",
-      de: "#1465ff",
-      id: "#FFC500",
-      th: "#077500",
-      und: "#181815"
+    languages = {
+      en:  {code: 'en', name: 'English', color: "#00beff"},
+      es:  {code: 'es', name: 'Español', color: "#CBFF00"},
+      pt:  {code: 'pt', name: 'Português', color: "#27FF00"},
+      it:  {code: 'it', name: 'Italiano', color: "#FF004B"},
+      tr:  {code: 'tr', name: 'Türkçe', color: "#00FF63"},
+      ru:  {code: 'ru', name: 'Pу́сский', color: "#00FFDC"},
+      ar:  {code: 'ar', name: 'العربية', color: "#EC00FF"},
+      fr:  {code: 'fr', name: 'Français', color: "#FF7A00"},
+      ja:  {code: 'ja', name: '日本語', color: "#7c00ff"},
+      de:  {code: 'de', name: 'Deutsch', color: "#1465ff"},
+      in:  {code: 'in', name: 'Bahasa Indonesia', color: "#FFC500"},
+      th:  {code: 'th', name: 'ภาษาไทย', color: "#077500"},
+      und: {code: 'und', name: 'All others', color: "#181815"},
     };
 
-    viewmodel.languageLayers([
-      {code: 'all', name: "Show all"},
-      {code: 'en', name: 'English'},
-      {code: 'es', name: 'Español'},
-      {code: 'pt', name: 'Português'},
-      {code: 'it', name: 'Italiano'},
-      {code: 'tr', name: 'Türkçe'},
-      {code: 'ru', name: 'Pу́сский'},
-      {code: 'ar', name: 'العربية'},
-      {code: 'fr', name: 'Français'},
-      {code: 'ja', name: '日本語'},
-      {code: 'de', name: 'Deutsch'},
-      {code: 'id', name: 'Bahasa Indonesia'},
-      {code: 'th', name: 'ภาษาไทย'},
-      {code: 'und', name: 'All others'},
-    ]);
+    // Make a colormap object.
+    _.each(languages, function (metadata, lang) {
+      colormap[lang] = metadata.color;
+    });
+
+    // Initialize all language layers, including a layer for showing all of
+    // them.
+    viewmodel.languageLayers(
+      [{code: 'all', name: "Show all"}].concat(_.values(languages)));
+
+    // Initialize the language statistics.
+    _.each(languages, function (metadata, code) {
+      language_stats.lang[code] = 0;
+    });
 
     $("#worldmap").height($(window).height());
     world = worldmap.create("#worldmap", colormap);
-    websocket.initialize(appConfig.tweet_channel, deburst);
+    websocket.initialize(appConfig.tweet_channel, receive_tweets);
     websocket.initialize(appConfig.metadata_channel, metadata);
     
-    viewmodel.layerShown("all");
     viewmodel.layerShown.subscribe(world.show);
+    viewmodel.layerShown.push("all");
 
     // Start the time counter.
     setInterval(function () {
@@ -78,11 +82,80 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
     }, 1000);
 
     setTimeout(function () {
-      $(".sidemenu").css("left", "-100px");
+      $(".js-sidebar").css("left", "-300px");
       setTimeout(function () {
-        $(".sidemenu").css("left", "");
-      }, 250);
-    }, 3000);
+        $(".js-sidebar").css("left", "");
+      }, 400);
+    }, 4000);
+
+    // Create a bar chart for showing language frequencies.
+    language_bar = stackedbar.create(".js-language-stackedbar");
+    language_chart = barchart.create(".graph .js-language-barchart");
+    // Create a bar chart for showing country frequencies.
+    country_chart = barchart.create(".graph .js-country-barchart", {
+      width: 500,
+      height: 330,
+      max: 20,
+      margin: {top: 10, right: 10, bottom: 200, left: 40}
+    });
+  };
+    
+  receive_tweets = function (tweets) {
+    language_stats.total += tweets.length;
+
+    tweets.forEach(function (tweet) {
+      if (_.has(language_stats.lang, tweet.lang)) {
+        language_stats.lang[tweet.lang] += 1;
+      }
+      else {
+        language_stats.lang.und += 1;
+      }
+  
+      if (_.has(country_stats, tweet.origin)) {
+        country_stats[tweet.origin].total += 1;
+        if (_.has(country_stats[tweet.origin].languages, tweet.lang)) {
+          country_stats[tweet.origin].languages[tweet.lang] += 1;
+        }
+        else {
+          country_stats[tweet.origin].languages[tweet.lang] = 1;
+        }
+      }
+      else {
+        country_stats[tweet.origin] = {
+          total: 1,
+          languages: {}
+        };
+        country_stats[tweet.origin].languages[tweet.lang] = 1;
+      }
+
+    });
+
+    language_bar.draw(_.map(language_stats.lang, function (value, lang) {
+      return {
+        frequency: value,
+        class: "dot-" + lang,
+        name: languages[lang].name
+      };
+    }));
+
+    language_chart.draw(_.map(language_stats.lang, function (value, lang) {
+      return {
+        frequency: value,
+        class: "dot-" + lang,
+        name: languages[lang].name
+      };
+    }));
+
+    country_chart.draw(_.map(country_stats, function (data, country) {
+      return {
+        frequency: data.total,
+        class: "land",
+        name: country
+      };
+    }));
+
+    // Show tweets, but not all at once, hence the de-bursting.
+    deburst(tweets);
   };
 
   /**
@@ -186,6 +259,7 @@ function ($, _, ko, viewmodel, websocket, worldmap, moment, pseudort) {
   $(window).resize(function () {
     $("#worldmap").height($(window).height());
     world.redraw();
+    language_bar.redraw();
   });
 
   /**

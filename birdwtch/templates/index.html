@@ -13,30 +13,58 @@
 {% endblock headscripts %}
 
 {% block content %}
-<div class="sidemenu hidden-xs">
-  <h4> Showing tweets having geographic coordinates </h4>
+<div class="js-sidebar hidden-xs">
 
-  <p>Sometime tweets come with geographic coordinates attached as metadata.
-  Showing this position on a map along with the language used to write the
-  tweet, give us the opportunity to build interesting visualizations depicting
-  the languages of this world.  </p>
+  <div class="container-fluid menu">
 
-  Explore each language:
-  <div data-bind="foreach: languageLayers">
-    <div class="radio">
-      <label>
-        <input type="radio" name="layerGroup"
-        data-bind="value: code, checked: $root.layerShown" />
-        <span data-bind="text:name"></span>
-      </label>
+    <div class="row">
+      <div class="col-md-12">
+        <h4> Showing tweets having geographic coordinates </h4>
+
+        <p>Sometime tweets come with geographic coordinates attached as metadata.
+        Showing this position on a map along with the language used to write the
+        tweet, give us the opportunity to build interesting visualizations depicting
+        the languages of this world.  </p>
+
+        
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label class="col-md-6 control-label">Explore</label>
+            <div class="col-md-6">
+              <select class="form-control" name="layerGroup"
+                data-bind="
+                options: languageLayers,
+                selectedOptions: layerShown,
+                optionsText: 'name',
+                optionsValue: 'code'">
+              </select>
+            </div>
+          </div>
+        </form>
+
+      </div>
+
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="graph">
+          <div class="js-language-barchart"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="graph">
+          <div class="js-country-barchart"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <footer>
-  <p>Built by hdemers</p>
-  Source <a href="https://github.com/hdemers/birdwtch"> code</a> on
-  GitHub
-  </footer>
+  <div class="js-language-stackedbar"></div>
 
 </div>
 
@@ -53,17 +81,24 @@
     </div>
   </div>
 
+
   <div class="metadata">
 
     <div class="row">
-      <div class="col-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: detectionCount"></span>
       </div>
-      <div class="col-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: runningTime"></span>
       </div>
-      <div class="cold-xs-4">
+      <div class="col-xs-3">
         <span data-bind="text: detectionRate"></span>/min
+      </div>
+      <div class="col-xs-3">
+        <span class="credits">
+          by hdemers
+          - <a href="https://github.com/hdemers/birdwtch">github</a>
+        </span>
       </div>
     </div>
 

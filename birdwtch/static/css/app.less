@@ -4,6 +4,7 @@
 @import "base.css";
 
 @fontcolor: #dadada;
+@darkfont: #555348;
 @dot: #181815;
 @background: #2e2d27;
 @land: #34332c;
@@ -24,7 +25,8 @@
 @forest: #077500;
 @white: white;
 
-@sidemenuwidth: 280px;
+@menuwidth: 600px;
+@stackedBarWidth: 6px;
 
 body {
     background-color: @background;
@@ -35,38 +37,54 @@ a {
     color: @blue;
 }
 
-.sidemenu {
+.js-sidebar {
     position: absolute;
-    left: -(@sidemenuwidth - 20px);
-    width: @sidemenuwidth;
     height: 100%;
-    padding: 20px;
     overflow: auto;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    background-color: @dot;
     z-index: 10;
     opacity: 0.8;
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     transition: all 0.3s ease;
+    left: -(@menuwidth - @stackedBarWidth);
+    /*left: 0;*/
 }
 
 ::-webkit-scrollbar {
     display: none;
 }
 
-.sidemenu:hover {
+.menu {
+    width: @menuwidth;
+    padding: 20px;
+    margin-right: 10px;
+    height: 100%;
+    background-color: @dot;
+}
+
+.menu div.row:first-child {
+    height: 30%;
+}
+
+.js-sidebar:hover {
     left: 0px;
 }
 
-.sidemenu h4 {
-    margin-top: 50px;
+.form-group {
+    width: 400px;
 }
 
-.container-fluid {
-    padding: 0 15px;
+select.form-control {
+    color: @dot;
+    background-color: @fontcolor;
+    border: 2px solid @fontcolor;
+}
+
+.menu h4 {
+    margin-top: 50px;
 }
 
 #alertContainer {
@@ -98,7 +116,7 @@ a {
     position: relative;
 }
 
-svg, canvas {
+.map {
     position: absolute;
     top: 0px;
     bottom: 0px;
@@ -123,12 +141,12 @@ svg, canvas {
     position: absolute;
     top: 0%;
     color: @blue;
-    padding: 0 15px;
+    padding: 0 30px;
 }
 
 .metadata {
     position: absolute;
-    width: 50%;
+    width: 100%;
     bottom: 0%;
     left: 3%;
     color: @blue;
@@ -139,15 +157,16 @@ svg, canvas {
     margin-bottom: 30px;
 }
 
-footer {
-    margin-top: 80px;
+.credits {
+    font-size: 12px;
+    color: @fontcolor;
 }
 
 .dot-en {
     fill: @blue;
 }
 
-.dot-id {
+.dot-in {
     fill: @redorange;
 }
 
@@ -192,4 +211,38 @@ footer {
 }
 
 .dot-und {
+}
+
+.bar {
+    fill-opacity: 0.9;
+}
+
+// Graph related style
+
+.js-language-stackedbar {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: @stackedBarWidth;
+    margin-right: 10px;
+    background-color: transparent;
+}
+
+text {
+  font: 12px sans-serif;
+  fill: @fontcolor;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: @darkfont;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line,
+.y.axis .tick text {
+  display: none;
 }
