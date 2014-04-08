@@ -54,8 +54,8 @@ def originating_country(tweet):
 
 def country(tweets):
     for tweet in tweets:
-        country = ''
-        country_code = ''
+        country = 'Unknown'
+        country_code = 'UNK'
 
         if 'place' in tweet and tweet['place']:
             if 'country' in tweet['place']:
