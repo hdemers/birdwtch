@@ -94,7 +94,9 @@ stackedbar) {
     // Create a bar chart for showing country frequencies.
     country_chart = barchart.create(".graph .js-country-barchart", {
       width: 500,
-      max: 20
+      height: 330,
+      max: 20,
+      margin: {top: 10, right: 10, bottom: 200, left: 40}
     });
   };
     
