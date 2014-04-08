@@ -40,7 +40,7 @@ stackedbar) {
       fr:  {code: 'fr', name: 'Français', color: "#FF7A00"},
       ja:  {code: 'ja', name: '日本語', color: "#7c00ff"},
       de:  {code: 'de', name: 'Deutsch', color: "#1465ff"},
-      id:  {code: 'id', name: 'Bahasa Indonesia', color: "#FFC500"},
+      in:  {code: 'in', name: 'Bahasa Indonesia', color: "#FFC500"},
       th:  {code: 'th', name: 'ภาษาไทย', color: "#077500"},
       und: {code: 'und', name: 'All others', color: "#181815"},
     };
